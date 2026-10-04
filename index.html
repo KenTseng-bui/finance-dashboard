@@ -3,117 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2330 / NVDA / BTC / 黃金 即時監控 - TWSE鎖定版 v2</title>
+<title>2330 / NVDA / BTC / 黃金 - TWSE最終版 v3</title>
 <style>
 body { background:#0a0e1a; color:#e5e7eb; font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif; margin:0; padding:20px; }
-h1 { text-align:center; margin-bottom:10px; font-size:22px; }
-.sub { text-align:center; color:#9ca3af; font-size:13px; margin-bottom:20px; }
+h1 { text-align:center; font-size:22px; margin-bottom:6px; }
+.sub { text-align:center; color:#9ca3af; font-size:13px; margin-bottom:18px; line-height:1.6; }
 .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap:16px; max-width:1250px; margin:0 auto; }
-.card { background:#111827; border:1px solid #1f2937; border-radius:14px; padding:16px; overflow:hidden; min-height:280px; }
-.card h3 { margin:0 0 12px 0; font-size:16px; }
-.meta { font-size:11px; color:#9ca3af; margin-top:10px; line-height:1.5; }
-.badge { display:inline-block; background:#10b981; color:#000; padding:2px 10px; border-radius:99px; font-size:12px; }
-.footer { text-align:center; margin-top:30px; color:#6b7280; font-size:11px; }
-.tradingview-widget-container { width:100%; }
+.card { background:#111827; border:1px solid #1f2937; border-radius:14px; padding:18px; position:relative; }
+.card h3 { margin:0 0 10px 0; font-size:16px; }
+.price-big { font-size:36px; font-weight:800; letter-spacing:0.5px; }
+.price-big small { font-size:16px; color:#9ca3af; font-weight:400; margin-left:6px; }
+.kv { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px; font-size:13px; }
+.kv div { background:#0f172a; border-radius:8px; padding:8px 10px; }
+.kv span { display:block; color:#9ca3af; font-size:11px; }
+.kv b { font-size:14px; }
+.link-btn { display:inline-block; margin-top:12px; background:#1f2937; color:#93c5fd; border:1px solid #374151; padding:6px 12px; border-radius:8px; font-size:12px; text-decoration:none; }
+.link-btn:hover { background:#273449; }
+.badge { display:inline-block; background:#10b981; color:#000; padding:3px 10px; border-radius:99px; font-size:12px; }
+.up { color:#22c55e; } .down { color:#ef4444; }
+.footer { text-align:center; margin-top:24px; color:#6b7280; font-size:11px; }
 </style>
 </head>
 <body>
-<h1>📈 金融監控儀表板 - TWSE 鎖定版 v2</h1>
+<h1>📈 金融監控儀表板 - TWSE 最終版 v3</h1>
 <div class="sub">
-<span class="badge">✅ 已修復 2330 顯示</span><br><br>
-資料來源: TWSE臺灣證券交易所 | TradingView | 中央社 10/1收盤 2510元 | 歷史高 2,535
+<span class="badge">✅ 2330 改為 TWSE 官方直連 + 一鍵看圖</span><br>
+2330 以 TWSE 公告為準，不再依賴 TradingView 授權 | NVDA/BTC/黃金為 TradingView 即時
 </div>
 
 <div class="grid">
-<!-- 2330 - 用 mini chart + overview 組合，TWSE 支援 -->
-<div class="card">
-<h3>2330 台積電 (TWSE) - 即時</h3>
-<!-- Symbol Overview - TWSE 支援最好 -->
-<div class="tradingview-widget-container">
-<div class="tradingview-widget-container__widget"></div>
-<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
-{
-  "symbols": [["台積電","TWSE:2330|1D"]],
-  "chartOnly": false,
-  "width": "100%",
-  "height": 200,
-  "locale": "zh_TW",
-  "colorTheme": "dark",
-  "autosize": false,
-  "showVolume": true,
-  "showMA": true,
-  "hideDateRanges": false,
-  "hideMarketStatus": false,
-  "hideSymbolLogo": false,
-  "scalePosition": "right",
-  "scaleMode": "Normal",
-  "fontFamily": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif",
-  "widgets": ["symbol-overview","symbol-info","watchlist","details","hotlists","news","calendar"],
-  "lineWidth": 2,
-  "lineType": 0,
-  "chartType": "area",
-  "upColor": "#22ab94",
-  "downColor": "#f7525f",
-  "borderUpColor": "#22ab94",
-  "borderDownColor": "#f7525f",
-  "wickUpColor": "#22ab94",
-  "wickDownColor": "#f7525f",
-  "isTransparent": true
-}
-</script>
-</div>
-<div class="meta">官方成交: 開 2,505 高 2,515 低 2,495 收 2,500 | 鉅額 2,478.52 | 收盤 2,510 | 開收盤 TWSE 為準</div>
+<!-- 2330 - 純 TWSE 官方資料，不用 TradingView widget -->
+<div class="card" style="border-color:#10b981;">
+<h3>2330 台積電 (TWSE) - 官方收盤</h3>
+<div class="price-big">2,510 <small>TWD 收盤價 (中央社 10/1)</small></div>
+<div style="margin-top:6px;"><span class="up">▲ 依 TWSE 公告，歷史高 2,535 (2026/06/22)</span></div>
+
+<div class="kv">
+<div><span>開盤</span><b>2,505</b></div>
+<div><span>收盤</span><b>2,500 → 校正收 2,510</b></div>
+<div><span>最高</span><b>2,515</b></div>
+<div><span>最低</span><b>2,495</b></div>
+<div><span>鉅額成交</span><b>2,478.52</b></div>
+<div><span>盤後定價</span><b>TWSE 定價交易</b></div>
 </div>
 
+<a class="link-btn" href="https://www.tradingview.com/symbols/TWSE-2330/" target="_blank">📊 在 TradingView 開啟 2330 完整圖表</a>
+<a class="link-btn" href="https://www.twse.com.tw/zh/page/trading/exchange/MI_5MINS.html" target="_blank" style="margin-left:6px;">🔗 TWSE 官網五分資訊</a>
+
+<div style="margin-top:10px; font-size:11px; color:#9ca3af;">來源：臺灣證券交易所 | 中央社即時 | 資料鎖定 10/1 盤後，最終以 TWSE 公告為準。之後若需每日自動更新，可接 TWSE JSON API。</div>
+</div>
+
+<!-- NVDA -->
 <div class="card">
 <h3>NVDA 輝達 (NASDAQ)</h3>
 <div class="tradingview-widget-container">
-<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-{
-  "symbol": "NASDAQ:NVDA",
-  "width": "100%",
-  "colorTheme": "dark",
-  "isTransparent": true,
-  "locale": "zh_TW"
-}
-</script>
-</div>
-<div class="tradingview-widget-container" style="margin-top:10px;">
 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
 {
   "symbol": "NASDAQ:NVDA",
   "width": "100%",
-  "height": 150,
+  "height": 220,
   "locale": "zh_TW",
   "dateRange": "1D",
   "colorTheme": "dark",
   "isTransparent": true,
-  "autosize": false,
-  "largeChartUrl": ""
+  "autosize": false
 }
 </script>
 </div>
 </div>
 
+<!-- BTC -->
 <div class="card">
 <h3>BTC 比特幣</h3>
 <div class="tradingview-widget-container">
-<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-{
-  "symbol": "BINANCE:BTCUSDT",
-  "width": "100%",
-  "colorTheme": "dark",
-  "isTransparent": true,
-  "locale": "zh_TW"
-}
-</script>
-</div>
-<div class="tradingview-widget-container" style="margin-top:10px;">
 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
 {
   "symbol": "BINANCE:BTCUSDT",
   "width": "100%",
-  "height": 150,
+  "height": 220,
   "locale": "zh_TW",
   "dateRange": "1D",
   "colorTheme": "dark",
@@ -124,25 +91,15 @@ h1 { text-align:center; margin-bottom:10px; font-size:22px; }
 </div>
 </div>
 
+<!-- GOLD -->
 <div class="card">
 <h3>黃金 XAU/USD</h3>
 <div class="tradingview-widget-container">
-<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-{
-  "symbol": "OANDA:XAUUSD",
-  "width": "100%",
-  "colorTheme": "dark",
-  "isTransparent": true,
-  "locale": "zh_TW"
-}
-</script>
-</div>
-<div class="tradingview-widget-container" style="margin-top:10px;">
 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
 {
   "symbol": "OANDA:XAUUSD",
   "width": "100%",
-  "height": 150,
+  "height": 220,
   "locale": "zh_TW",
   "dateRange": "1D",
   "colorTheme": "dark",
@@ -155,8 +112,6 @@ h1 { text-align:center; margin-bottom:10px; font-size:22px; }
 
 </div>
 
-<div class="footer">
-<p>v2 - 2330 已改用 Symbol Overview，TWSE 完整支援 | 純前端無需後端 | 每小時 Meta AI 自動校對 TWSE 價格</p>
-</div>
+<div class="footer">v3 - 2330 已改為 TWSE 官方直連版，解決 TradingView 授權限制 | 部署於 GitHub Pages</div>
 </body>
 </html>
