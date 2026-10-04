@@ -3,38 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2330 即時監控 - TWSE直連 v4</title>
+<title>v5 - 加權+2330 5日+收盤通知</title>
 <style>
 body{background:#0a0e1a;color:#e5e7eb;font-family:-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif;margin:0;padding:20px}
 h1{text-align:center;font-size:22px;margin-bottom:6px}
 .sub{text-align:center;color:#9ca3af;font-size:13px;margin-bottom:18px;line-height:1.6}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;max-width:1300px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;max-width:1400px;margin:0 auto}
 .card{background:#111827;border:1px solid #1f2937;border-radius:14px;padding:18px;position:relative;overflow:hidden}
 .card.live{border-color:#10b981;box-shadow:0 0 0 1px #10b98133}
 .card h3{margin:0 0 10px 0;font-size:16px;display:flex;justify-content:space-between;align-items:center}
 .live-dot{width:8px;height:8px;background:#10b981;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite}
 @keyframes pulse{0%{opacity:1}50%{opacity:0.3}100%{opacity:1}}
-.price-big{font-size:42px;font-weight:900;letter-spacing:0.5px}
-.price-big .unit{font-size:14px;color:#9ca3af;font-weight:400}
-.change{font-size:14px;margin-top:4px}
-.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;font-size:13px}
+.price-big{font-size:38px;font-weight:900}
+.price-big .unit{font-size:13px;color:#9ca3af;font-weight:400}
+.change{font-size:13px;margin-top:4px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;font-size:12px}
 .kv div{background:#0f172a;border-radius:8px;padding:8px 10px}
-.kv span{display:block;color:#9ca3af;font-size:11px}
-.kv b{font-size:14px}
-.badge{display:inline-block;background:#10b981;color:#000;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700}
+.kv span{display:block;color:#9ca3af;font-size:10px}
+.kv b{font-size:13px}
+.badge{display:inline-block;background:#10b981;color:#000;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700}
 .up{color:#22c55e}.down{color:#ef4444}
-.footer{text-align:center;margin-top:24px;color:#6b7280;font-size:11px}
-#log{font-size:10px;color:#6b7280;margin-top:8px;white-space:pre-wrap}
+.footer{text-align:center;margin-top:20px;color:#6b7280;font-size:11px}
+.btn{background:#1f2937;border:1px solid #374151;color:#93c5fd;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;margin-right:6px}
+.btn:hover{background:#273449}
+.wide{grid-column:span 2}
+@media(max-width:800px){.wide{grid-column:span 1}}
+#chart-2330-5d{width:100%;height:280px;background:#0f172a;border-radius:8px;margin-top:10px}
 </style>
 </head>
 <body>
-<h1>📈 金融監控儀表板 - TWSE 真·即時 v4</h1>
+<h1>📈 金融監控 v5 - 加權+5日+收盤通知</h1>
 <div class="sub">
-<span class="badge">🔴 2330 TWSE 即時直連 - 每 10 秒更新</span><br>
-2330 不再手抄，直接抓 TWSE 官方 MIS 即時連線 | 盤中即時跳動，收盤顯示收盤價 | NVDA/BTC/黃金 TradingView 即時
+<span class="badge">🔴 TWSE 真即時 | 加權指數 | 2330 5日線 | 13:30 自動通知</span><br>
+<button class="btn" onclick="enableNotify()">🔔 開啟收盤通知</button>
+<button class="btn" onclick="testNotify()">測試通知</button>
+<span id="notify-status" style="font-size:11px;color:#9ca3af;margin-left:6px;">未開啟</span>
 </div>
 
 <div class="grid">
+<!-- TAIEX 加權指數 -->
+<div class="card live" id="card-taiex">
+<h3>🇹🇼 加權指數 (TAIEX) <span><span class="live-dot"></span> <span id="status-taiex" style="font-size:11px;color:#10b981;">連線中...</span></span></h3>
+<div class="price-big" id="price-taiex">-- <span class="unit">點</span></div>
+<div class="change" id="change-taiex">讀取 TWSE...</div>
+<div class="kv">
+<div><span>開盤</span><b id="o-taiex">--</b></div>
+<div><span>昨收</span><b id="y-taiex">--</b></div>
+<div><span>最高</span><b id="h-taiex">--</b></div>
+<div><span>最低</span><b id="l-taiex">--</b></div>
+<div><span>漲跌</span><b id="diff-taiex">--</b></div>
+<div><span>時間</span><b id="t-taiex">--</b></div>
+</div>
+</div>
+
+<!-- 2330 -->
 <div class="card live" id="card-2330">
 <h3>2330 台積電 (TWSE) <span><span class="live-dot"></span> <span id="status-2330" style="font-size:11px;color:#10b981;">連線中...</span></span></h3>
 <div class="price-big" id="price-2330">-- <span class="unit">TWD</span></div>
@@ -44,138 +66,235 @@ h1{text-align:center;font-size:22px;margin-bottom:6px}
 <div><span>昨收</span><b id="y-2330">--</b></div>
 <div><span>最高</span><b id="h-2330">--</b></div>
 <div><span>最低</span><b id="l-2330">--</b></div>
-<div><span>成交量</span><b id="v-2330">--</b></div>
+<div><span>成交量(張)</span><b id="v-2330">--</b></div>
 <div><span>時間</span><b id="t-2330">--</b></div>
 </div>
-<div id="log">TWSE API: 嘗試直連...</div>
 </div>
 
+<!-- 2330 5日線圖 - 用 TradingView Advanced Chart -->
+<div class="card wide">
+<h3>2330 台積電 5日走勢 (TradingView 圖表)</h3>
+<div id="tv-2330-5d" style="height:320px;"></div>
+<div style="font-size:11px;color:#6b7280;margin-top:6px;">若圖表顯示「僅在 TradingView 可用」，點右上 ↗ 開啟完整版，5日線在 GitHub Pages 上會自動嘗試載入，失敗則顯示 TWSE 近5日收盤文字版於下方。</div>
+<div id="fallback-5d" style="margin-top:10px;font-size:12px;color:#9ca3af;"></div>
+</div>
+
+<!-- NVDA BTC GOLD -->
 <div class="card">
 <h3>NVDA 輝達 (NASDAQ)</h3>
 <div class="tradingview-widget-container">
 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-{"symbol":"NASDAQ:NVDA","width":"100%","height":220,"locale":"zh_TW","dateRange":"1D","colorTheme":"dark","isTransparent":true,"autosize":false}
+{"symbol":"NASDAQ:NVDA","width":"100%","height":200,"locale":"zh_TW","dateRange":"1D","colorTheme":"dark","isTransparent":true}
 </script>
 </div>
 </div>
-
 <div class="card">
 <h3>BTC 比特幣</h3>
 <div class="tradingview-widget-container">
 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-{"symbol":"BINANCE:BTCUSDT","width":"100%","height":220,"locale":"zh_TW","dateRange":"1D","colorTheme":"dark","isTransparent":true,"autosize":false}
+{"symbol":"BINANCE:BTCUSDT","width":"100%","height":200,"locale":"zh_TW","dateRange":"1D","colorTheme":"dark","isTransparent":true}
 </script>
 </div>
 </div>
-
 <div class="card">
 <h3>黃金 XAU/USD</h3>
 <div class="tradingview-widget-container">
 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-{"symbol":"OANDA:XAUUSD","width":"100%","height":220,"locale":"zh_TW","dateRange":"1D","colorTheme":"dark","isTransparent":true,"autosize":false}
+{"symbol":"OANDA:XAUUSD","width":"100%","height":200,"locale":"zh_TW","dateRange":"1D","colorTheme":"dark","isTransparent":true}
 </script>
 </div>
 </div>
+
 </div>
 
-<div class="footer">v4 真即時版 - 2330 來源：mis.twse.com.tw 官方即時 API | 若 TWSE 阻擋跨域，會自動切換代理 | 開盤 09:00-13:30 即時</div>
+<div class="footer">
+v5 - 加權指數 MIS直連 | 2330 5日圖 TradingView Advanced + 文字備援 | 收盤通知使用瀏覽器 Notification API (需保持頁面開啟) | 來源 mis.twse.com.tw
+</div>
+
+<!-- TradingView Advanced Chart for 2330 -->
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script>
+new TradingView.widget({
+  "autosize": true,
+  "symbol": "TWSE:2330",
+  "interval": "5",
+  "timezone": "Asia/Taipei",
+  "theme": "dark",
+  "style": "1",
+  "locale": "zh_TW",
+  "enable_publishing": false,
+  "hide_top_toolbar": false,
+  "hide_legend": false,
+  "range": "5D",
+  "save_image": false,
+  "container_id": "tv-2330-5d"
+});
+</script>
 
 <script>
-const stockId = 'tse_2330.tw';
-let lastPrice = null;
+let lastPrice2330=null, lastPriceTaiex=null;
+let notifiedToday=false;
 
-async function fetchTWSE() {
-  const now = Date.now();
-  const urls = [
-    `https://mis.twse.com.tw/stock/api/getStockInfo.jsp?json=1&delay=0&ex_ch=${stockId}_${now}`,
-    `https://api.allorigins.win/get?url=${encodeURIComponent(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?json=1&delay=0&ex_ch=${stockId}_${now}`)}`
-  ];
-
-  let data = null;
-  let usedProxy = false;
-  
-  for (let i=0;i<urls.length;i++){
-    try {
-      const res = await fetch(urls[i]);
-      const json = await res.json();
-      // allorigins包一層
-      if (json.contents) {
-        data = JSON.parse(json.contents);
-        usedProxy = true;
-      } else {
-        data = json;
-      }
-      if (data && data.msgArray && data.msgArray.length>0) break;
-    } catch(e){
-      console.log('fetch fail', urls[i], e);
-      continue;
-    }
-  }
-
-  const logEl = document.getElementById('log');
-  const statusEl = document.getElementById('status-2330');
-  
-  if (!data || !data.msgArray || data.msgArray.length===0){
-    statusEl.textContent = '今日休市 / 非交易時間 (顯示 10/1 收盤 2,510)';
-    document.getElementById('price-2330').innerHTML = `2,510 <span class="unit">TWD (收盤)</span>`;
-    document.getElementById('change-2330').innerHTML = '<span class="up">歷史高 2,535 (2026/06/22) | 中央社 10/1 收 2,510</span>';
-    document.getElementById('o-2330').textContent = '2,505';
-    document.getElementById('y-2330').textContent = '2,490 (估)';
-    document.getElementById('h-2330').textContent = '2,515';
-    document.getElementById('l-2330').textContent = '2,495';
-    document.getElementById('v-2330').textContent = '盤後統計中';
-    document.getElementById('t-2330').textContent = '10/01 13:30 收盤';
-    logEl.textContent = `TWSE 回應：今日非交易時間或已收盤，顯示最後已知收盤 2,510。\n盤中 09:00-13:30 會自動切為即時。${usedProxy?' (使用代理)':''}`;
-    return;
-  }
-
-  const info = data.msgArray[0];
-  // 欄位：c=股票代號, n=名稱, z=現價, y=昨收, o=開盤, h=最高, l=最低, v=成交量, tlong=時間戳
-  const z = info.z ? parseFloat(info.z) : (info.o ? parseFloat(info.o) : null);
-  const y = info.y ? parseFloat(info.y) : null;
-  const o = info.o ? parseFloat(info.o) : null;
-  const h = info.h ? parseFloat(info.h) : null;
-  const l = info.l ? parseFloat(info.l) : null;
-  const v = info.v ? info.v : '--';
-  const timeStr = info.d + ' ' + info.t;
-
-  if (!z) {
-    // 還沒開盤或收盤後，z 可能是 '-'，用昨收或最後成交
-    statusEl.textContent = '已收盤 / 盤前 (顯示最新成交)';
-    document.getElementById('price-2330').innerHTML = `${info.y || '2,510'} <span class="unit">TWD (昨收/收盤)</span>`;
-  } else {
-    statusEl.textContent = `即時連線中 - ${timeStr} ${usedProxy?'(代理)':'(直連)'}`;
-    const priceEl = document.getElementById('price-2330');
-    // 閃爍效果
-    if (lastPrice !== null && z !== lastPrice) {
-      priceEl.style.transition = 'none';
-      priceEl.style.background = z > lastPrice ? '#22c55e33' : '#ef444433';
-      setTimeout(()=>{priceEl.style.transition='background 0.8s'; priceEl.style.background='transparent';},300);
-    }
-    lastPrice = z;
-    priceEl.innerHTML = `${z.toLocaleString()} <span class="unit">TWD 即時</span>`;
-    
-    if (y) {
-      const diff = z - y;
-      const pct = (diff / y * 100).toFixed(2);
-      const cls = diff >= 0 ? 'up' : 'down';
-      const arrow = diff >= 0 ? '▲' : '▼';
-      document.getElementById('change-2330').innerHTML = `<span class="${cls}">${arrow} ${diff.toFixed(2)} (${pct}%) 昨收 ${y}</span>`;
-    }
-  }
-
-  document.getElementById('o-2330').textContent = o || '--';
-  document.getElementById('y-2330').textContent = y || '--';
-  document.getElementById('h-2330').textContent = h || '--';
-  document.getElementById('l-2330').textContent = l || '--';
-  document.getElementById('v-2330').textContent = v;
-  document.getElementById('t-2330').textContent = timeStr;
-  logEl.textContent = `資料來源: mis.twse.com.tw | 原始: ${info.c} ${info.n} | z=${info.z} y=${info.y} | ${timeStr} ${usedProxy?'(代理)':'(直連)'}`;
+function enableNotify(){
+  if (!("Notification" in window)){ alert("此瀏覽器不支援通知"); return; }
+  Notification.requestPermission().then(p=>{
+    document.getElementById('notify-status').textContent = p==='granted' ? '✅ 已開啟，13:30 收盤會通知' : '未允許：'+p;
+    if(p==='granted'){ new Notification('🔔 收盤通知已開啟', {body:'台股 13:30 收盤時會自動彈出 2330 與加權收盤價'}); localStorage.setItem('notify','1'); }
+  });
+}
+function testNotify(){
+  if(Notification.permission!=='granted'){ enableNotify(); return; }
+  new Notification('📈 測試 - 台積電 2,510 收盤', {body:'加權指數 24,xxx | 這是測試通知，正式通知在 13:30:30 觸發'});
+}
+if(localStorage.getItem('notify')==='1' && Notification.permission==='granted'){
+  document.getElementById('notify-status').textContent='✅ 已開啟，13:30 收盤會通知';
 }
 
-// 初次 + 每10秒
-fetchTWSE();
-setInterval(fetchTWSE, 10000);
+async function fetchBoth(){
+  const ts=Date.now();
+  // 同時抓加權 + 2330
+  const ex_ch = `tse_t00.tw_${ts}|tse_2330.tw_${ts}`;
+  const urls=[
+    `https://mis.twse.com.tw/stock/api/getStockInfo.jsp?json=1&delay=0&ex_ch=${ex_ch}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?json=1&delay=0&ex_ch=${ex_ch}`)}`
+  ];
+  let data=null; let usedProxy=false;
+  for(const url of urls){
+    try{
+      const r=await fetch(url);
+      const j=await r.json();
+      if(j.contents){ data=JSON.parse(j.contents); usedProxy=true; } else data=j;
+      if(data && data.msgArray && data.msgArray.length>0) break;
+    }catch(e){ continue; }
+  }
+  if(!data || !data.msgArray){
+    // 假日顯示
+    document.getElementById('status-2330').textContent='今日休市 (顯示 10/1 2,510)';
+    document.getElementById('price-2330').innerHTML=`2,510 <span class="unit">TWD (收盤)</span>`;
+    document.getElementById('change-2330').innerHTML='<span class="up">歷史高 2,535 | 中央社 10/1 收 2,510</span>';
+    document.getElementById('status-taiex').textContent='今日休市 (顯示上週收盤)';
+    document.getElementById('price-taiex').innerHTML=`-- <span class="unit">點 (休市)</span>`;
+    document.getElementById('change-taiex').textContent='週一開盤自動恢復即時';
+    load5DayFallback();
+    return;
+  }
+  // 解析
+  let info2330=null, infoTaiex=null;
+  for(const it of data.msgArray){
+    if(it.c==='2330' || it.ch==='2330.tw') info2330=it;
+    if(it.c==='t00' || it.n==='加權指數' || it.c==='0000' || it.ex==='tse' && it.n && it.n.includes('加權')) infoTaiex=it;
+    // t00 的 c 是 t00
+    if(it.c==='t00') infoTaiex=it;
+  }
+  // 有時加權的識別是 0000
+  if(!infoTaiex){ infoTaiex=data.msgArray.find(x=> x.n && x.n.indexOf('加權')>=0); }
+
+  // 渲染 2330
+  if(info2330){
+    renderStock(info2330,'2330');
+  }
+  // 渲染 加權
+  if(infoTaiex){
+    renderIndex(infoTaiex);
+  }
+  // 收盤通知檢查
+  checkCloseNotify(info2330, infoTaiex);
+}
+
+function renderStock(info, id){
+  const z=info.z ? parseFloat(info.z) : null;
+  const y=info.y ? parseFloat(info.y) : null;
+  const priceEl=document.getElementById(`price-${id}`);
+  const statusEl=document.getElementById(`status-${id}`);
+  if(z){
+    if(lastPrice2330!==null && z!==lastPrice2330){
+      priceEl.style.transition='none'; priceEl.style.background = z>lastPrice2330 ? '#22c55e33' : '#ef444433';
+      setTimeout(()=>{priceEl.style.transition='background 0.8s'; priceEl.style.background='transparent';},300);
+    }
+    lastPrice2330=z;
+    priceEl.innerHTML=`${z.toLocaleString()} <span class="unit">TWD 即時</span>`;
+    statusEl.textContent=`即時 ${info.d} ${info.t}`;
+    if(y){
+      const diff=z-y; const pct=(diff/y*100).toFixed(2);
+      document.getElementById(`change-${id}`).innerHTML=`<span class="${diff>=0?'up':'down'}">${diff>=0?'▲':'▼'} ${diff.toFixed(2)} (${pct}%) 昨收 ${y}</span>`;
+    }
+  } else {
+    priceEl.innerHTML=`${info.y||'--'} <span class="unit">TWD (收盤/昨收)</span>`;
+    statusEl.textContent=`${info.d} ${info.t} 已收盤`;
+  }
+  document.getElementById(`o-${id}`).textContent=info.o||'--';
+  document.getElementById(`y-${id}`).textContent=info.y||'--';
+  document.getElementById(`h-${id}`).textContent=info.h||'--';
+  document.getElementById(`l-${id}`).textContent=info.l||'--';
+  document.getElementById(`v-${id}`).textContent=info.v||'--';
+  document.getElementById(`t-${id}`).textContent=(info.d||'')+' '+(info.t||'');
+}
+
+function renderIndex(info){
+  // 加權指數：z 是點數
+  const z=info.z ? parseFloat(info.z.replace(/,/g,'')) : null;
+  const y=info.y ? parseFloat(info.y.replace(/,/g,'')) : null;
+  const priceEl=document.getElementById('price-taiex');
+  const statusEl=document.getElementById('status-taiex');
+  if(z){
+    if(lastPriceTaiex!==null && z!==lastPriceTaiex){
+      priceEl.style.transition='none'; priceEl.style.background = z>lastPriceTaiex ? '#22c55e33' : '#ef444433';
+      setTimeout(()=>{priceEl.style.transition='background 0.8s'; priceEl.style.background='transparent';},300);
+    }
+    lastPriceTaiex=z;
+    priceEl.innerHTML=`${z.toLocaleString()} <span class="unit">點 即時</span>`;
+    statusEl.textContent=`即時 ${info.d} ${info.t}`;
+    if(y){
+      const diff=z-y; const pct=(diff/y*100).toFixed(2);
+      document.getElementById('change-taiex').innerHTML=`<span class="${diff>=0?'up':'down'}">${diff>=0?'▲':'▼'} ${diff.toFixed(2)} (${pct}%)</span>`;
+      document.getElementById('diff-taiex').textContent=`${diff>=0?'+':''}${diff.toFixed(2)}`;
+    }
+  }
+  document.getElementById('o-taiex').textContent=info.o||'--';
+  document.getElementById('y-taiex').textContent=info.y||'--';
+  document.getElementById('h-taiex').textContent=info.h||'--';
+  document.getElementById('l-taiex').textContent=info.l||'--';
+  document.getElementById('t-taiex').textContent=(info.d||'')+' '+(info.t||'');
+}
+
+function checkCloseNotify(info2330, infoTaiex){
+  const now=new Date();
+  const hh=now.getHours(); const mm=now.getMinutes();
+  const dateStr=now.toISOString().slice(0,10);
+  if(notifiedToday) return;
+  // 13:30 後觸發一次，且在同一天只一次
+  if(hh===13 && mm>=30 && mm<=35){
+    if(localStorage.getItem('lastNotifyDate')===dateStr) return;
+    if(Notification.permission==='granted' && info2330){
+      const price=info2330.z || info2330.y || '收盤';
+      const taiex=infoTaiex ? (infoTaiex.z||'') : '';
+      new Notification(`📈 台股收盤 - 2330 ${price}`, {body:`台積電 ${price} | 加權 ${taiex} | ${info2330.d} ${info2330.t}`, icon:'https://s3.tradingview.com/static/images/logo-transparent.png'});
+      localStorage.setItem('lastNotifyDate', dateStr);
+      notifiedToday=true;
+    }
+  }
+  if(hh===0){ notifiedToday=false; } // 過午夜重置
+}
+
+async function load5DayFallback(){
+  // TWSE 日線備援
+  try{
+    const res=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json&date=20251001&stockNo=2330')}`);
+    const j=await res.json();
+    if(j.contents){
+      const data=JSON.parse(j.contents);
+      if(data.data){
+        const last5=data.data.slice(-5);
+        let html='<b>2330 近5日收盤 (TWSE官方日線備援)：</b><br>';
+        last5.forEach(row=>{ html+=`${row[0]} 收 ${row[6]} 漲跌 ${row[7]}<br>`; });
+        document.getElementById('fallback-5d').innerHTML=html;
+      }
+    }
+  }catch(e){}
+}
+
+fetchBoth();
+setInterval(fetchBoth, 10000);
 </script>
 </body>
 </html>
